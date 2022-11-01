@@ -30,6 +30,9 @@ func LoadNode(data []int) *Node {
 	return &node
 }
 func (n *Node) Insert(value int) {
+	if n.Value == value {
+		return
+	}
 	if n.Value < value {
 		insertRight(n, value)
 	} else if n.Value > value {
@@ -65,6 +68,9 @@ func (n *Node) SearchByKey(key int) bool {
 	return true
 }
 
+func (n *Node) GetLevel() int {
+	return calculateLevel(n) - 1
+}
 func (bst *BST) findDeep(node *Node, level int) {
 	if node == nil {
 		return
@@ -79,7 +85,7 @@ func (bst *BST) findDeep(node *Node, level int) {
 }
 func (bst *BST) Find() (deep string, deepest int) {
 	data = nil
-	bst.level = calculateLevel(bst.Tree) - 1
+	bst.level = bst.Tree.GetLevel()
 	bst.findDeep(bst.Tree, bst.level)
 	deep = bst.deep
 	deepest = bst.level
@@ -93,4 +99,47 @@ func calculateLevel(n *Node) int {
 	leftLevel := calculateLevel(n.Left) + 1
 	rightLeve := calculateLevel(n.Right) + 1
 	return int(math.Max(float64(leftLevel), float64(rightLeve)))
+}
+
+func RemoveValue(n *Node, value int) *Node {
+	if n == nil {
+		return n
+	}
+	if value < n.Value {
+		n.Left = RemoveValue(n.Left, value)
+	}
+	if value > n.Value {
+		n.Right = RemoveValue(n.Right, value)
+	}
+
+	if n.Value == value {
+		if n.Left == nil && n.Right == nil {
+			n = nil
+			return n
+		}
+		if n.Left == nil && n.Right != nil {
+			temp := n.Right
+			n = nil
+			n = temp
+			return n
+		}
+		if n.Left != nil && n.Right == nil {
+			temp := n.Left
+			n = nil
+			n = temp
+			return n
+		}
+		tempNode := MinValue(n.Right)
+		n.Value = tempNode.Value
+		n.Right = RemoveValue(n.Right, tempNode.Value)
+	}
+	return n
+}
+
+func MinValue(node *Node) *Node {
+	temp := node
+	for nil != temp && temp.Left != nil {
+		temp = temp.Left
+	}
+	return temp
 }
