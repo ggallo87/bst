@@ -6,7 +6,10 @@ import (
 	"strings"
 )
 
-var data []string
+var (
+	data  []string
+	route []string
+)
 
 type Node struct {
 	Value       int
@@ -142,4 +145,51 @@ func MinValue(node *Node) *Node {
 		temp = temp.Left
 	}
 	return temp
+}
+
+func (bst *BST) GetRouteInOrderNode() string {
+	route = nil
+	result := new(string)
+	inOrder(bst.Tree, result)
+	return *result
+}
+
+func inOrder(node *Node, res *string) {
+	if node != nil {
+		inOrder(node.Left, res)
+		route = append(route, strconv.Itoa(node.Value))
+		inOrder(node.Right, res)
+	}
+	*res = strings.Join(route, ",")
+}
+
+func (bst *BST) GetRoutePreOrder() string {
+	route = nil
+	result := new(string)
+	preOrder(bst.Tree, result)
+	return *result
+}
+
+func preOrder(node *Node, res *string) {
+	if node != nil {
+		route = append(route, strconv.Itoa(node.Value))
+		preOrder(node.Left, res)
+		preOrder(node.Right, res)
+	}
+	*res = strings.Join(route, ",")
+}
+func (bst *BST) GetRoutePostOrder() string {
+	route = nil
+	result := new(string)
+	postOrder(bst.Tree, result)
+	return *result
+}
+
+func postOrder(node *Node, res *string) {
+	if node != nil {
+		preOrder(node.Left, res)
+		preOrder(node.Right, res)
+		route = append(route, strconv.Itoa(node.Value))
+	}
+	*res = strings.Join(route, ",")
 }
